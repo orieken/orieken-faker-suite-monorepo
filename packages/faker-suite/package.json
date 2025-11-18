@@ -1,0 +1,38 @@
+{
+  "name": "@orieken/faker-suite",
+  "version": "1.0.0",
+  "description": "Meta package wiring @orieken faker modules into a unified Faker suite with datacenter scenarios.",
+  "author": "Oscar Rieken <orieken@users.noreply.github.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orieken/faker-suite.git"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build"
+  },
+  "peerDependencies": {
+    "@faker-js/faker": "^9.0.0",
+    "@orieken/faker-frequency": "^1.0.0",
+    "@orieken/faker-hardware": "^1.0.0",
+    "@orieken/faker-datacenter": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "faker",
+    "suite",
+    "datacenter",
+    "hardware",
+    "frequency",
+    "typescript"
+  ]
+}

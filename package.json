@@ -1,0 +1,8 @@
+{
+  "name": "orieken-faker-suite-monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "playground"
+  ]
+}
