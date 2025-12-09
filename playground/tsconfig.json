@@ -3,6 +3,7 @@
   "compilerOptions": {
     "types": ["node", "vitest"],
     "composite": false,
+    "rootDir": "..",
     "outDir": "dist"
   },
   "include": ["src"],
