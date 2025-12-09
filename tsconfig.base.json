@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "lib": ["ES2023"],
+    "strict": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "composite": true,
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@orieken/faker-frequency": ["./packages/faker-frequency/src"],
+      "@orieken/faker-hardware": ["./packages/faker-hardware/src"],
+      "@orieken/faker-datacenter": ["./packages/faker-datacenter/src"],
+      "@orieken/faker-suite": ["./packages/faker-suite/src"]
+    }
+  }
+}

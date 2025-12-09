@@ -1,0 +1,20 @@
+{
+  "files": [],
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@orieken/faker-frequency": ["./packages/faker-frequency/src"],
+      "@orieken/faker-hardware": ["./packages/faker-hardware/src"],
+      "@orieken/faker-datacenter": ["./packages/faker-datacenter/src"],
+      "@orieken/faker-suite": ["./packages/faker-suite/src"]
+    }
+  },
+  "references": [
+    { "path": "packages/faker-frequency" },
+    { "path": "packages/faker-hardware" },
+    { "path": "packages/faker-datacenter" },
+    { "path": "packages/faker-suite" },
+    { "path": "playground" }
+  ]
+}

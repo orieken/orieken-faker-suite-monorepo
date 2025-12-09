@@ -1,0 +1,121 @@
+# 📘 Faker Suite Monorepo — Project Generation TODO
+
+A complete sequence of prompts an AI agent can use to recreate the Orieken Faker Suite monorepo from scratch, following Clean Code, Clean Architecture, and modern design patterns.
+
+Use this file as the authoritative recipe for bootstrapping the project.
+
+- [x] 🧱 Phase 0 — Initialization
+  - [x] 0.1 — Create Monorepo Structure
+    - [x] Create a new monorepo named `orieken-faker-suite` using NPM workspaces
+    - [x] Include folders:
+      - [x] `/packages/faker-suite`
+      - [x] `/packages/faker-frequency`
+      - [x] `/packages/faker-hardware`
+      - [x] `/packages/faker-datacenter`
+      - [x] `/playground` (Vite + Vue 3 + Storybook)
+      - [x] `/docs`
+    - [x] Create root `package.json` with workspaces
+    - [x] Add `.gitignore`
+    - [x] Add root `README.md`
+
+- [ ] 🎛️ Phase 1 — Core Faker Modules
+  - [ ] 1.1 — Frequency Library (@orieken/faker-frequency)
+    - [x] Generate a standalone TypeScript NPM package
+    - [x] Provide frequency band generators: VHF, UHF, SHF, EHF
+    - [x] Provide converters: Hz, kHz, MHz, GHz
+    - [x] Provide center frequency + bandwidth generator (deterministic, seeded)
+    - [x] Support optional min/max band overrides (with validation & tests)
+    - [x] Follow clean architecture and pure function patterns (modularized types/units/bands/fx, added edge-case tests)
+  - [ ] 1.2 — Hardware Library (@orieken/faker-hardware)
+    - [x] Generate a standalone package that fakes:
+      - [x] Rack specs (U-height, depth, vendor)
+      - [x] Server specs (CPU sockets, RAM, NVMe slots)
+      - [x] Power supplies (wattage, redundancy)
+      - [x] Storage devices + arrays
+      - [x] Network gear (switch/router/firewall)
+    - [x] Use factories + strategy patterns to generate structured specs (seedable strategies with bounds tests)
+  - [ ] 1.3 — Datacenter Library (@orieken/faker-datacenter)
+    - [x] Generate a standalone package
+    - [x] Provide layout primitives (room, row, rack, rack position)
+    - [x] Provide telemetry (temperature, humidity, power draw)
+    - [x] Provide cooling units
+    - [x] Provide network fabric + cables
+    - [x] Use composition and pure data structures (scenario generator with deterministic seed + tests)
+
+- [x] 🧩 Phase 2 — Meta-Package
+  - [x] 2.1 — faker-suite Aggregator (@orieken/faker-suite)
+    - [x] Export `fakerSuite(faker)`
+    - [x] Add modules: `frequency`, `hardware`, `datacenter`
+    - [x] Add `fx.datacenter.scenario.generate()` for nested scenarios:
+      - [x] rooms → rows → racks → servers → telemetry
+    - [x] Follow the facade pattern
+
+- [ ] 🏭 Phase 3 — Scenario & Visualization
+  - [ ] 3.1 — Scenario Engine
+    - [ ] Implement the datacenter scenario engine
+    - [ ] Generate:
+      - [ ] `DatacenterScenario { rooms: RoomScenario[], generatedAt: string }`
+    - [ ] Ensure each room contains rows, each row contains racks, each rack contains servers and telemetry
+    - [ ] Must be deterministic when faker is seeded
+  - [ ] 3.2 — Heatmap Visualization Component
+    - [ ] Create a Vue 3 component `<HeatmapView>`
+    - [ ] Render grid of racks
+    - [ ] Color-code heat values or power draw
+    - [ ] Props:
+      - [ ] `rooms: RoomScenario[]`
+      - [ ] `mode: "temp" | "power"`
+    - [ ] Use pure computed logic for color mapping
+
+- [ ] 🛠️ Phase 4 — Playground App
+  - [ ] 4.1 — Vite + Vue 3 App
+    - [ ] Scaffold a Vite + Vue 3 app
+    - [ ] Include panels:
+      - [ ] `FrequencyPanel`
+      - [ ] `HardwarePanel`
+      - [ ] `DatacenterPanel`
+      - [ ] `HeatmapView`
+    - [ ] Use a responsive grid layout
+    - [ ] Import `@orieken/faker-suite` and show interactive examples
+  - [ ] 4.2 — Storybook Setup
+    - [ ] Add Storybook for Vue 3
+    - [ ] Provide stories for:
+      - [ ] `FrequencyPanel`
+      - [ ] `HardwarePanel`
+      - [ ] `DatacenterPanel`
+      - [ ] `HeatmapView` (Temp/Power variants)
+
+- [ ] 📚 Phase 5 — Documentation
+  - [ ] 5.1 — Clean Coding Guide
+    - [ ] Create `docs/CLEAN_CODING_GUIDE.md` describing:
+      - [ ] Max cyclomatic complexity < 7
+      - [ ] Max function length 30 LOC
+      - [ ] Pure functions only
+      - [ ] No duplication
+      - [ ] Strict TypeScript
+      - [ ] Mandatory unit tests for non-trivial logic
+  - [ ] 5.2 — Architecture Guide
+    - [ ] Create `docs/ARCHITECTURE.md` including:
+      - [ ] Monorepo structure
+      - [ ] Package relationships
+      - [ ] Datacenter scenario generation flow
+      - [ ] Relevant Mermaid diagrams
+  - [ ] 5.3 — Design Patterns Guide
+    - [ ] Build `docs/DESIGN_PATTERNS.md` detailing use of:
+      - [ ] Facade
+      - [ ] Factory
+      - [ ] Strategy
+      - [ ] Adapter
+      - [ ] Examples from the faker libraries
+  - [ ] 5.4 — Agent Guidelines Document
+    - [ ] Write `docs/AGENT_GUIDELINES.md` telling AI agents to:
+      - [ ] Respect architecture
+      - [ ] Keep code pure + testable
+      - [ ] Update docs as they evolve
+      - [ ] Avoid breaking changes without ADR
+
+- [ ] 🧾 Phase 6 — ADR System (Optional)
+  - [ ] 6.1 — ADR Bootstrapping
+    - [ ] Create `docs/adrs/`
+    - [ ] Add `0000-template.md` – Standard ADR template
+    - [ ] Add `0001-monorepo-structure.md`
+    - [ ] Add `0002-faker-suite-architecture.md`

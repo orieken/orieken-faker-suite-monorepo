@@ -1,24 +1,12 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "strict": true,
-    "jsx": "preserve",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
-    "types": [
-      "vite/client"
-    ]
+    "types": ["node", "vitest"],
+    "composite": false,
+    "rootDir": "src",
+    "outDir": "dist"
   },
-  "include": [
-    "src/**/*",
-    ".storybook/**/*"
-  ]
+  "include": ["src"],
+  "exclude": ["dist"]
 }
+

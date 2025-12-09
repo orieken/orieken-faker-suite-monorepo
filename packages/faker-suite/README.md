@@ -1,38 +1,23 @@
-
 # @orieken/faker-suite
 
-Meta package that wires together:
+A unified facade for the Orieken Faker Suite, aggregating frequency, hardware, and datacenter generation capabilities into a single API.
 
-- `@orieken/faker-frequency`
-- `@orieken/faker-hardware`
-- `@orieken/faker-datacenter`
+## Installation
 
-and adds a **datacenter scenario generator** on top.
+```bash
+npm install @orieken/faker-suite
+```
 
 ## Usage
 
-```ts
-import { faker } from "@faker-js/faker";
-import { fakerSuite } from "@orieken/faker-suite";
+```typescript
+import { faker } from '@faker-js/faker';
+import { fakerSuite } from '@orieken/faker-suite';
 
-const fx = fakerSuite(faker);
+const fx = fakerSuite(faker, { seed: 123 });
 
-const freq = fx.frequency.uhf.MHz();
+// Access different modules
+const freq = fx.frequency.generateFrequency({ band: 'VHF', unit: 'MHz' });
 const server = fx.hardware.server();
-const rackSpec = fx.datacenter.rack.spec();
-
-const scenario = fx.datacenter.scenario.generate();
-console.log(scenario.rooms[0].rows[0].racks[0]);
-```
-
-## Mermaid Overview
-
-```mermaid
-graph TD
-  FAKER["@faker-js/faker"] --> SUITE[fakerSuite(faker)]
-  SUITE --> FREQ[@orieken/faker-frequency]
-  SUITE --> HW[@orieken/faker-hardware]
-  SUITE --> DC[@orieken/faker-datacenter]
-
-  DC --> SCENARIO[datacenter.scenario.generate()]
+const scenario = fx.datacenter.scenario.generate({ rooms: 1 });
 ```

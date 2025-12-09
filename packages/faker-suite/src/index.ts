@@ -1,102 +1,82 @@
+import { createSeededFrequencyFx, FrequencyFxConfig } from '@orieken/faker-frequency';
+import { createSeededHardwareFx, HardwareFxConfig, ServerSpec } from '@orieken/faker-hardware';
+import { createDatacenterFx, DatacenterScenarioOptions as RawOptions } from '@orieken/faker-datacenter';
 
-import { faker as baseFaker } from "@faker-js/faker";
-import { frequencyModule } from "@orieken/faker-frequency";
-import { hardwareModule } from "@orieken/faker-hardware";
-import { datacenterModule as baseDatacenterModule } from "@orieken/faker-datacenter";
+export interface DatacenterScenarioOptions {
+  rooms?: number;
+  rowsPerRoom?: number;
+  racksPerRow?: number;
+  telemetryPerRack?: number;
+}
 
-type BaseFaker = typeof baseFaker;
+export interface EngineTelemetrySample {
+  timestamp: string;
+  temperatureC: number;
+  humidityPct: number;
+  powerKW: number;
+}
 
-export interface DatacenterScenarioRack {
+export interface EngineRackScenario {
   id: string;
-  rack: any;
-  server: any;
-  power: any;
-  temp: any;
+  servers: ServerSpec[];
+  telemetry: EngineTelemetrySample[];
+}
+export interface EngineRowScenario { id: string; racks: EngineRackScenario[]; }
+export interface EngineRoomScenario { id: string; rows: EngineRowScenario[]; }
+export interface DatacenterScenario { rooms: EngineRoomScenario[]; generatedAt: string }
+
+export interface FakerSuiteConfig {
+  seed?: number | string;
+  frequency?: FrequencyFxConfig;
+  hardware?: HardwareFxConfig;
+  datacenter?: DatacenterScenarioOptions;
 }
 
-export interface DatacenterScenarioRow {
-  id: string;
-  racks: DatacenterScenarioRack[];
-}
-
-export interface DatacenterScenarioRoom {
-  id: string;
-  rows: DatacenterScenarioRow[];
-}
-
-export interface DatacenterScenario {
-  rooms: DatacenterScenarioRoom[];
-  generatedAt: string;
-}
-
-export interface FakerWithSuite extends BaseFaker {
-  frequency: ReturnType<typeof frequencyModule>;
-  hardware: ReturnType<typeof hardwareModule>;
-  datacenter: ReturnType<typeof baseDatacenterModule> & {
+export interface FakerSuiteFx {
+  frequency: ReturnType<typeof createSeededFrequencyFx>['fx'];
+  hardware: ReturnType<typeof createSeededHardwareFx>['fx'];
+  datacenter: {
     scenario: {
-      generate: () => DatacenterScenario;
-    };
+      generate: (options?: DatacenterScenarioOptions) => DatacenterScenario;
+    }
   };
+  seed?: number | string;
 }
 
-const generateDatacenterScenario = (dc: any): DatacenterScenario => {
-  const rooms: DatacenterScenarioRoom[] = [];
-
-  // Simple, predictable scenario: 1–2 rooms, 2–4 rows, 5–10 racks per row
-  const roomCount = 1 + Math.floor(Math.random() * 2);
-
-  for (let r = 0; r < roomCount; r++) {
-    const rows: DatacenterScenarioRow[] = [];
-    const rowCount = 2 + Math.floor(Math.random() * 3);
-
-    for (let i = 0; i < rowCount; i++) {
-      const racks: DatacenterScenarioRack[] = [];
-      const rackCount = 5 + Math.floor(Math.random() * 6);
-
-      for (let j = 0; j < rackCount; j++) {
-        const rack = dc.rack.spec();
-        const server = dc.server.spec();
-        const power = dc.telemetry.powerReading();
-        const temp = dc.telemetry.tempSensor();
-
-        racks.push({
-          id: `room-${r}-row-${i}-rack-${j}`,
-          rack,
-          server,
-          power,
-          temp
-        });
-      }
-
-      rows.push({
-        id: `room-${r}-row-${i}`,
-        racks
-      });
-    }
-
-    rooms.push({
-      id: `room-${r}`,
-      rows
-    });
+export const fakerSuite = (faker: any, config: FakerSuiteConfig = {}): FakerSuiteFx => {
+  const seed = config.seed;
+  if (seed !== undefined && typeof faker.seed === 'function') {
+    faker.seed(typeof seed === 'number' ? seed : Array.from(String(seed)).map(ch => ch.charCodeAt(0)));
   }
+  const frequency = createSeededFrequencyFx(faker, { seed, ...(config.frequency || {}) }).fx;
+  const hardwareSeed = createSeededHardwareFx(faker, { seed, ...(config.hardware || {}) });
+  const hardware = hardwareSeed.fx;
 
-  return {
-    rooms,
-    generatedAt: new Date().toISOString()
+  const datacenter = {
+    scenario: {
+      generate: (options: DatacenterScenarioOptions = {}): DatacenterScenario => {
+        const { rooms = 1, rowsPerRoom = 2, racksPerRow = 4, telemetryPerRack = 5 } = { ...(config.datacenter || {}), ...options };
+        const dcf = createDatacenterFx(faker);
+        // Build room skeletons
+        const skeletonRooms = Array.from({ length: rooms }, () => dcf.room(rowsPerRoom, racksPerRow));
+        // Fill racks with servers and telemetry
+        const roomsOut: EngineRoomScenario[] = skeletonRooms.map(room => ({
+          id: room.id,
+          rows: room.rows.map(row => ({
+            id: row.id,
+            racks: row.racks.map(rk => {
+              const serverCount = rk.servers; // numeric count from datacenter skeleton
+              return {
+                id: rk.id,
+                servers: Array.from({ length: serverCount }, () => hardware.server()),
+                telemetry: dcf.telemetrySamples(telemetryPerRack)
+              };
+            })
+          }))
+        }));
+        return { rooms: roomsOut, generatedAt: new Date().toISOString() };
+      }
+    }
   };
-};
-
-export const fakerSuite = (fakerInstance: BaseFaker = baseFaker): FakerWithSuite => {
-  const anyFaker: any = fakerInstance as any;
-
-  anyFaker.frequency = frequencyModule(anyFaker);
-  anyFaker.hardware = hardwareModule(anyFaker);
-
-  const dc = baseDatacenterModule(anyFaker);
-  dc.scenario = {
-    generate: () => generateDatacenterScenario(dc)
-  };
-  anyFaker.datacenter = dc;
-
-  return anyFaker as FakerWithSuite;
+  return { frequency, hardware, datacenter, seed };
 };
