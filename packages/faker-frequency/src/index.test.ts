@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createSeededFrequencyFx, toHz, fromHz } from './index';
+import { createSeededFrequencyFx, createFrequencyFx, toHz, fromHz } from './index';
 import { faker } from '@faker-js/faker';
 
 describe('frequency faker', () => {
@@ -55,5 +55,15 @@ describe('frequency faker', () => {
     const { fx } = createSeededFrequencyFx(faker, { seed: 2, bandOverrides: overrides });
     fx.generateFrequency({ band: 'VHF', unit: 'MHz' });
     expect(overrides).toEqual(snapshot);
+  });
+  describe('Base Frequency FX', () => {
+    it('generates frequencies and channels without overrides', () => {
+      const basicFx = createFrequencyFx(faker);
+      const freq = basicFx.generateFrequency({ band: 'VHF' });
+      expect(freq).toBeGreaterThan(0);
+      const channel = basicFx.generateChannel({ band: 'VHF' });
+      expect(channel.center).toBeGreaterThan(0);
+      expect(channel.bandwidthHz).toBeGreaterThan(0);
+    });
   });
 });
