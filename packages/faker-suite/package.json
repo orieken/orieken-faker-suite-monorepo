@@ -11,19 +11,18 @@
     "build": "tsc -p tsconfig.json",
     "test": "vitest run"
   },
-  "peerDependencies": {
-    "@faker-js/faker": "^9.0.0",
+  "dependencies": {
     "@orieken/faker-frequency": "^1.0.0",
     "@orieken/faker-hardware": "^1.0.0",
     "@orieken/faker-datacenter": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@faker-js/faker": "^9.0.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
     "vitest": "^1.0.0",
     "@faker-js/faker": "^9.0.0",
-    "@types/node": "^20.0.0",
-    "@orieken/faker-frequency": "1.0.0",
-    "@orieken/faker-hardware": "1.0.0",
-    "@orieken/faker-datacenter": "1.0.0"
+    "@types/node": "^20.0.0"
   }
 }

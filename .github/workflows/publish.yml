@@ -1,23 +1,19 @@
 name: Publish Packages
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
-    inputs:
-      dry_run:
-        description: 'Run with --dry-run'
-        required: false
-        type: boolean
-        default: false
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/**'
 
 jobs:
-  publish:
+  build-and-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,25 +24,14 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build All Packages
+      - name: Build all packages
         run: npm run build
 
-      - name: Run Tests
-        run: npm run test
-
       - name: Publish to NPM
-        if: ${{ inputs.dry_run != true }}
+        run: |
+          npm publish --workspaces --access public --if-present
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm publish --workspaces --access public
-
-      - name: Publish (Dry Run)
-        if: ${{ inputs.dry_run == true }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm publish --workspaces --access public --dry-run

@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc -b",
     "clean": "rimraf packages/*/dist",
+    "publish:all": "npm publish --workspaces --access public",
     "test": "npm -ws run test"
   },
   "devDependencies": {
